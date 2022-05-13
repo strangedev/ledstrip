@@ -1,0 +1,4 @@
+.config.old
+ledstrip
+.build
+*.log
