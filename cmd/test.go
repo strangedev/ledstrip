@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -10,16 +11,14 @@ import (
 	"github.com/strangedev/ledstrip/lib/animation"
 )
 
-var (
-	pin      int
-	ledCount int
-)
-
 func init() {
-	testCommand.Flags().IntVar(&pin, "pin", 12, "Pin number of the data pin")
-	testCommand.Flags().IntVar(&ledCount, "led", 1, "Number of LEDs")
-
 	rootCmd.AddCommand(testCommand)
+}
+
+func MustNotFail(err error) {
+	if err != nil {
+		log.Fatalf("Unexpected error: %v", err)
+	}
 }
 
 var testCommand = &cobra.Command{
@@ -31,14 +30,27 @@ var testCommand = &cobra.Command{
 			log.Fatalf("Cannot initialize the LED strip: %v", err)
 		}
 
-		strip.Clear()
+		fmt.Println("Red")
+		MustNotFail(strip.Monochrome(color.RGBA{R: 255, G: 0, B: 0, A: 1}))
+		MustNotFail(strip.Render())
+
 		time.Sleep(time.Second * 5)
-		strip.Monochrome(color.RGBA{R: 255, G: 0, B: 0, A: 1})
+
+		fmt.Println("Green")
+		MustNotFail(strip.Monochrome(color.RGBA{R: 0, G: 255, B: 0, A: 1}))
+		MustNotFail(strip.Render())
+
 		time.Sleep(time.Second * 5)
-		strip.Monochrome(color.RGBA{R: 0, G: 255, B: 0, A: 1})
+
+		fmt.Println("Blue")
+		MustNotFail(strip.Monochrome(color.RGBA{R: 0, G: 0, B: 255, A: 1}))
+		MustNotFail(strip.Render())
+
 		time.Sleep(time.Second * 5)
-		strip.Monochrome(color.RGBA{R: 0, G: 0, B: 255, A: 1})
-		time.Sleep(time.Second * 5)
+
+		fmt.Println("Clear")
+		MustNotFail(strip.Clear())
+		MustNotFail(strip.Render())
 
 		if err := strip.Close(); err != nil {
 			log.Fatalf("Cannot close the LED strip: %v", err)

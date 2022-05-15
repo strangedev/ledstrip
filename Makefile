@@ -9,11 +9,10 @@ clean-deps:
 	cd extern/rpi_ws281x; rm *.o *.a
 
 deps:
-	cd extern/rpi_ws281x; for file in *.c; do $(CC) -fPIC -c -o $$file.o $$file; done && $(AR) rcs libws2811.a *.c.o
+	cd extern/rpi_ws281x; cmake .; make; for file in *.c; do $(CC) -fPIC -c -o $$file.o $$file; done && $(AR) rcs libws2811.a *.c.o
 
 clean:
 	go clean
 
 toolchain:
-	ct-ng armv7-rpi2-linux-gnueabihf
 	ct-ng build
