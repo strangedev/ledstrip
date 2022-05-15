@@ -2,3 +2,4 @@
 ledstrip
 .build
 *.log
+node_modules
