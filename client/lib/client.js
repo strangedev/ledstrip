@@ -22,7 +22,7 @@ const getClient = (address, protocol='http') => {
   return {
     async cancelAnimation() {
       try {
-        axios.post(
+        await axios.post(
           getRouteUrl('/animation/stop')
         );
       } catch {
@@ -31,7 +31,7 @@ const getClient = (address, protocol='http') => {
     },
     async startAnimation(animation) {
       return handleHttpError(async () =>
-        axios.post(
+        await axios.post(
           getRouteUrl('/animation/start'),
           animation
         )
@@ -39,7 +39,7 @@ const getClient = (address, protocol='http') => {
     },
     async stopAninmation() {
       return handleHttpError(async () =>
-        axios.post(
+        await axios.post(
           getRouteUrl('/animation/stop')
         )
       );

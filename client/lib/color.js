@@ -110,12 +110,11 @@ const stringifyColor = ([ r, g, b ]) => {
 /* END https://stackoverflow.com/a/9493060                                       */
 /*****************************************************************************/
 
-const rotate = (color, radians) => {
+const rotate = ([h, s, l], radians) => {
   const amount = radians / (2 * Math.PI);
-  const [ h, s, l ] = rgbToHsl(...color);
   const newHue = (h + amount) % 1;
 
-  return hslToRgb([ newHue, s, l ]);
+  return [ newHue, s, l ];
 }
 
 export {
