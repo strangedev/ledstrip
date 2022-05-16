@@ -26,7 +26,7 @@ const rainbow = {
   async handle ({ options }) {
     const duration = options.speed * Second;
     const client = getClient(options.addr);
-    const stepTime = 50 * Millisecond;
+    const stepTime = 10 * Millisecond;
     const stepsPerCycle = duration / stepTime;
     const rotationPerLed = (2 * Math.PI) / options.width;
     const rotationPerStep = (2 * Math.PI) / stepsPerCycle;
