@@ -1,7 +1,7 @@
+import { Animation } from '../../animation/animation.js';
 import { getClient } from '../../client.js';
-import { hslToRgb, rgbToHsl, rotate, stringifyColor } from '../../color.js';
+import { Color } from '../../color.js';
 import { Second, Millisecond } from '../../duration.js';
-import { rmap } from '../../lists.js';
 
 const rainbow = {
   name: 'rainbow',
@@ -24,29 +24,24 @@ const rainbow = {
   ],
 
   async handle ({ options }) {
+    const ledCount = options.leds;
     const duration = options.speed * Second;
     const client = getClient(options.addr);
-    const stepTime = 10 * Millisecond;
-    const stepsPerCycle = duration / stepTime;
+    const resolution = 10 * Millisecond;
+    const stepsPerCycle = duration / resolution;
     const rotationPerLed = (2 * Math.PI) / options.width;
     const rotationPerStep = (2 * Math.PI) / stepsPerCycle;
-    const startColor = [ 255, 0, 0 ];
-
-    const animation = {
-      StepTime: stepTime,
-      Steps: rmap(stepsPerCycle, (iStep) => ({
-        Colors: rmap(options.leds, (iLed) => {
-          const hsl = rgbToHsl(...startColor);
-          const newHsl = rotate(rotate(hsl, rotationPerLed * iLed), rotationPerStep * iStep);
-          const color = hslToRgb(...newHsl);
-
-          return stringifyColor(color);
-        })
-      }))
-    };
-
-    console.log(JSON.stringify(animation, null, 2));
-
+    const startColor = new Color({ r: 255, g: 0, b: 0});
+    const animation = Animation
+      .Builder(
+        { ledCount, duration, resolution },
+        (iStep, iLed) =>
+          startColor
+            .clone()
+            .rotate(rotationPerLed * iLed)
+            .rotate(rotationPerStep * iStep)
+      )
+      .serialized;
     
     await client.cancelAnimation();
     await client.startAnimation(animation);

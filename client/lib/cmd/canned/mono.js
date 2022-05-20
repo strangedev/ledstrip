@@ -1,7 +1,7 @@
+import { Animation } from '../../animation/animation.js';
 import { getClient } from '../../client.js';
-import { isColorFormat } from '../../color.js';
+import { Color } from '../../color.js';
 import { Second } from '../../duration.js';
-import { repeated } from '../../lists.js';
 
 const mono = {
   name: 'mono',
@@ -14,7 +14,7 @@ const mono = {
       alias: 'c',
       defaultValue: '#aa00ff',
       validate (value) {
-        if (!isColorFormat(value)) {
+        if (!Color.isColorFormat(value)) {
           throw new Error('Color must be a 24bit hex, i.e. "#c0ffee".');
         }
       }
@@ -25,12 +25,18 @@ const mono = {
     const client = getClient(options.addr);
 
     await client.cancelAnimation();
-    await client.startAnimation({
-      StepTime: 30 * Second,
-      Steps: [
-        { Colors: repeated(options.color, options.leds) }
-      ]
-    });
+    await client.startAnimation(
+      Animation
+        .Builder(
+          {
+            ledCount: options.leds,
+            duration: Second,
+            resolution: Second
+          },
+          () => Color.fromHex(options.color)
+        )
+        .serialized
+    );
   }
 };
 
